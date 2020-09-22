@@ -6,12 +6,12 @@
   "sketch": "dist/sketch.js",
   "license": "MIT",
   "sketch-assistant": {
-    "title": "Sketch Assistant For Digital Product Houston",
+    "title": "DP HTX - Naming Conventions",
     "description": "Sketch Assistant with DP HTX flavor name check",
     "icon": "https://github.com/SteamedBunX/sketch-assistant-digital-product-htx/raw/main/icon.png"
   },
   "author": {
-    "name": "Digital Product Houston"
+    "name": "Digital Product Houston - Yi Hao"
   },
   "keywords": [
     "sketch",
