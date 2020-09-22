@@ -14,7 +14,7 @@ const artboardNameCheck: RuleDefinition = {
       }
     }
   },
-  name: 'sketch-assistant-template/artboard-name-start-with-page-name',
+  name: 'sketch-assistant-dp-htx/artboard-name-start-with-page-name',
   title: 'Artboard name should start with it\' parent page\'s name',
   description: 'Reports a violation when Artboard name does not start with its parent page\'s name',
 }
@@ -33,7 +33,7 @@ const pageNameCheck: RuleDefinition = {
       }
     }
   },
-  name: 'sketch-assistant-template/page-name-start-with-emoji',
+  name: 'sketch-assistant-dp-htx/page-name-start-with-emoji',
   title: 'Page name should starts with an emoji',
   description: 'Reports a violation when Page name does not start with an emoji'
 }
@@ -57,7 +57,7 @@ const groupNameCheck: RuleDefinition = {
       }
     }
   },
-  name: 'sketch-assistant-template/group-name-shouldnt-be-default',
+  name: 'sketch-assistant-dp-htx/group-name-shouldnt-be-default',
   title: 'Group should not be left with the default name',
   description: 'Reports a violation when Group kept it\'s default name',
 }
@@ -80,21 +80,21 @@ const symbolNameCheck: RuleDefinition = {
       }
     }
   },
-  name: 'sketch-assistant-template/symbol-name-should-use-forward-slash-grouping',
+  name: 'sketch-assistant-dp-htx/symbol-name-should-use-forward-slash-grouping',
   title: 'Symbol names should use forward slash grouping',
   description: 'Reports a violation when symbol is not using forward slash grouping',
 }
 
 const assistant: AssistantPackage = async () => {
   return {
-    name: 'sketch-assistant-template',
+    name: 'sketch-assistant-dp-htx',
     rules: [artboardNameCheck, pageNameCheck, groupNameCheck, symbolNameCheck],
     config: {
       rules: {
-        'sketch-assistant-template/artboard-name-start-with-page-name': { active: true },
-        'sketch-assistant-template/page-name-start-with-emoji': { active: true },
-        'sketch-assistant-template/group-name-shouldnt-be-default': { active: true },
-        'sketch-assistant-template/symbol-name-should-use-forward-slash-grouping': { active: true },
+        'sketch-assistant-dp-htx/artboard-name-start-with-page-name': { active: true },
+        'sketch-assistant-dp-htx/page-name-start-with-emoji': { active: true },
+        'sketch-assistant-dp-htx/group-name-shouldnt-be-default': { active: true },
+        'sketch-assistant-dp-htx/symbol-name-should-use-forward-slash-grouping': { active: true },
       },
     },
   }
