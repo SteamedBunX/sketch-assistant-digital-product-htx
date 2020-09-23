@@ -1,4 +1,6 @@
-import { AssistantPackage, RuleContext, RuleDefinition, SketchFileObject } from '@sketch-hq/sketch-assistant-types'
+import { AssistantPackage, RuleDefinition, RuleUtils, SketchFileObject } from '@sketch-hq/sketch-assistant-types'
+import { Group } from '@sketch-hq/sketch-file-format-ts/dist/cjs/v3-types'
+
 const emojiStrip = require('emoji-strip')
 
 const artboardNameCheck: RuleDefinition = {
@@ -14,7 +16,7 @@ const artboardNameCheck: RuleDefinition = {
           || utils.isObjectIgnored(artboard)) { continue; };
 
         if (!artboard.name.startsWith(pageName + " - "))
-          context.utils.report(`Artboard "${artboard.name}"'s Name should start with "${pageName} - "`, artboard);
+          utils.report(`Artboard "${artboard.name}"'s Name should start with "${pageName} - "`, artboard);
       }
     }
   },
@@ -46,28 +48,12 @@ const pageNameCheck: RuleDefinition = {
 const groupNameCheck: RuleDefinition = {
   rule: async (context) => {
     const { utils } = context;
-    const numberRegex = new RegExp('^\\d+$');
-
     for (const page of utils.objects.page) {
       if (isArchived(page.name)) { continue; };
       for (const artboard of page.layers) {
         if (artboard._class !== 'artboard' || isArchived(artboard.name)) { continue; };
         for (const group of artboard.layers) {
-          if (isArchived(group.name)
-            || group._class !== 'group'
-            || utils.isObjectIgnored(group)) { continue; };
-          if (group.name === "Group") {
-            reportGroupNameViolation(context, group.name, group);
-            continue;
-          }
-          const nameComponents = group.name.split(' ');
-          if (nameComponents.length == 2 && nameComponents[0] === "Group" && nameComponents[1].match(numberRegex)) {
-            reportGroupNameViolation(context, group.name, group);
-            continue;
-          }
-          if (nameComponents.length > 1 && nameComponents[nameComponents.length - 1] === "Copy") {
-            reportGroupNameViolation(context, group.name, group);
-          }
+          checNestedkGroups(utils, group as Group);
         }
       }
     }
@@ -77,8 +63,26 @@ const groupNameCheck: RuleDefinition = {
   description: 'Reports a violation when Group kept it\'s default name',
 }
 
-function reportGroupNameViolation(context: RuleContext, groupName: String, layer: SketchFileObject) {
-  context.utils.report(`Group name for "${groupName}" shouldn't be default`, layer);
+function checNestedkGroups(utils: RuleUtils, group: Group) {
+  const numberRegex = new RegExp('^\\d+$');
+  if (isArchived(group.name)
+    || group._class !== 'group'
+    || utils.isObjectIgnored(group)) { return; };
+  const nameComponents = group.name.split(' ');
+  if (group.name === "Group") {
+    reportGroupNameViolation(utils, group.name, group);
+  } else if (nameComponents.length == 2 && nameComponents[0] === "Group" && nameComponents[1].match(numberRegex)) {
+    reportGroupNameViolation(utils, group.name, group);
+  } else if (nameComponents.length > 1 && nameComponents[nameComponents.length - 1] === "Copy") {
+    reportGroupNameViolation(utils, group.name, group);
+  }
+  for (const nestedGroup of group.layers) {
+    checNestedkGroups(utils, nestedGroup as Group);
+  }
+}
+
+function reportGroupNameViolation(utils: RuleUtils, groupName: String, layer: SketchFileObject) {
+  utils.report(`Group name for "${groupName}" shouldn't be default`, layer);
 }
 
 const symbolNameCheck: RuleDefinition = {
@@ -90,7 +94,7 @@ const symbolNameCheck: RuleDefinition = {
           if (isArchived(symbol.name)
             || utils.isObjectIgnored(symbol)) { continue; };
           if (symbol.name.split('/').length <= 1) {
-            context.utils.report(`Symbol "${symbol.name}" should use forward slash grouping`, symbol);
+            utils.report(`Symbol "${symbol.name}" should use forward slash grouping`, symbol);
           }
         }
         return;
