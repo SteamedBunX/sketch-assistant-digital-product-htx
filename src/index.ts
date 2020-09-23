@@ -41,7 +41,7 @@ const pageNameCheck: RuleDefinition = {
     }
   },
   name: 'sketch-assistant-dp-htx/page-name-start-with-emoji',
-  title: 'Page name should starts with an emoji',
+  title: 'Page name should starts with an emoji - DO NOT CHANGE THE SYMBOLS PAGE',
   description: 'Reports a violation when Page name does not start with an emoji'
 }
 
